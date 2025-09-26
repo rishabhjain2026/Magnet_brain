@@ -51,7 +51,7 @@ exports.update=async(req,res)=>{
         const id=req.params.id;
         const data=req.body
         const user=await usermodel.updateOne({
-            id:id
+            _id:id
         },{
             $set:data
         })
@@ -69,9 +69,9 @@ exports.update=async(req,res)=>{
 exports.delete_task=async(req,res)=>{
     try {
         const id=req.params.id;
-        const remove=await usermodel.deleteOne({id:id})
+        const remove=await usermodel.deleteOne({_id:id})
         console.log("task deleted succesfully");
-        res.status(200).send("task deletd succesfully")
+        res.status(200).send(remove)
         
     } catch (error) {
         console.log(error)

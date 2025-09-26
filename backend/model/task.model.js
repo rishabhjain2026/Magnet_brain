@@ -15,9 +15,9 @@ const TaskSchema=new mongoose.Schema({
         enum:['pending','completed'],
         default:'pending'
     },
-    id:{
-        type:String
-    }
+    // id:{
+    //     type:String
+    // }
 })
 
 module.exports=mongoose.model('Tasks',TaskSchema);
