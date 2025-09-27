@@ -6,6 +6,8 @@ import { useNavigate } from "react-router-dom";
 export default function TaskList() {
   const [tasks, setTasks] = useState([]);
   const [statusFilter, setStatusFilter] = useState("all");
+  const [priorityFilter, setPriorityFilter] = useState("all");
+  const [search, setSearch] = useState("");
   const [editingTaskId, setEditingTaskId] = useState(null);
   const [editForm, setEditForm] = useState({
     title: "",
@@ -16,7 +18,6 @@ export default function TaskList() {
   });
 
   const navigate = useNavigate();
-  const [search, setSearch] = useState("");
 
   // Fetch tasks from backend
   const fetchTasks = async () => {
@@ -32,26 +33,19 @@ export default function TaskList() {
     fetchTasks();
   }, []);
 
-   // Navigate to Add Task page
-  const goToAddTask = () => {
-    navigate("/add");
+  const goToAddTask = () => navigate("/add");
+
+  const deleteTask = async (id) => {
+    if (window.confirm("Are you sure you want to delete this task?")) {
+      try {
+        await API.delete(`/task/delete_task/${id}`);
+        fetchTasks();
+      } catch (err) {
+        console.error("Failed to delete task:", err);
+      }
+    }
   };
 
-  // Dashboard stats
-  const totalTasks = tasks.length;
-  const completedTasks = tasks.filter((t) => t.status === "completed").length;
-  const pendingTasks = tasks.filter((t) => t.status === "pending").length;
-
-  // Filter tasks
-  const filteredTasks = tasks.filter((task) => {
-    const matchesStatus = statusFilter === "all" || task.status === statusFilter;
-    const matchesSearch =
-      (task.title || "").toLowerCase().includes(search.toLowerCase()) ||
-      (task.description || "").toLowerCase().includes(search.toLowerCase());
-    return matchesStatus && matchesSearch;
-  });
-
-  // Start editing a task
   const startEditing = (task) => {
     setEditingTaskId(task._id);
     setEditForm({
@@ -77,47 +71,60 @@ export default function TaskList() {
     }
   };
 
-  const deleteTask = async (id) => {
-    if (window.confirm("Are you sure you want to delete this task?")) {
-      try {
-        await API.delete(`/task/delete_task/${id}`);
-        fetchTasks();
-      } catch (err) {
-        console.error("Failed to delete task:", err);
-      }
-    }
-  };
-
-  // Priority badge
+  // Priority badge classes
   const getPriorityBadge = (priority) => {
     switch (priority) {
       case "high":
-        return "bg-red-100 text-red-700 border border-red-300";
+        return "bg-red-100 text-red-700 border border-red-300 font-bold";
       case "medium":
-        return "bg-yellow-100 text-yellow-700 border border-yellow-300";
+        return "bg-yellow-100 text-yellow-700 border border-yellow-300 font-bold";
       case "low":
       default:
-        return "bg-green-100 text-green-700 border border-green-300";
+        return "bg-green-100 text-green-700 border border-green-300 font-bold";
     }
   };
 
+  // Card border color by priority
+  const getPriorityBorder = (priority) => {
+    switch (priority) {
+      case "high":
+        return "border-l-4 border-red-500";
+      case "medium":
+        return "border-l-4 border-yellow-500";
+      case "low":
+      default:
+        return "border-l-4 border-green-500";
+    }
+  };
+
+  // Filtered tasks
+  const filteredTasks = tasks.filter((task) => {
+    const matchesStatus = statusFilter === "all" || task.status === statusFilter;
+    const matchesPriority = priorityFilter === "all" || task.priority === priorityFilter;
+    const matchesSearch =
+      (task.title || "").toLowerCase().includes(search.toLowerCase()) ||
+      (task.description || "").toLowerCase().includes(search.toLowerCase());
+    return matchesStatus && matchesPriority && matchesSearch;
+  });
+
+  // Stats
+  const totalTasks = tasks.length;
+  const completedTasks = tasks.filter((t) => t.status === "completed").length;
+  const pendingTasks = tasks.filter((t) => t.status === "pending").length;
+
   return (
-    <div className="min-h-screen bg-gray-50 py-10 px-4">
+    <div className="min-h-screen bg-gradient-to-r from-blue-50 via-blue-100 to-blue-50 py-10 px-4">
       <div className="max-w-6xl mx-auto">
+        {/* Header + Add Task */}
         <div className="flex justify-between items-center mb-10">
-  <h2 className="text-4xl font-bold text-gray-800">
-    Task Manager
-  </h2>
-
-  <button
-    onClick={goToAddTask} // Navigate to TaskForm
-    className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
-  >
-    <Plus size={18} />
-    Add Task
-  </button>
-</div>
-
+          <h2 className="text-4xl font-bold text-gray-800">Task Manager</h2>
+          <button
+            onClick={goToAddTask}
+            className="flex items-center gap-2 bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700 transition shadow-md"
+          >
+            <Plus size={18} /> Add Task
+          </button>
+        </div>
 
         {/* Stats */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-10">
@@ -135,7 +142,7 @@ export default function TaskList() {
           </div>
         </div>
 
-        {/* Search & Filter */}
+        {/* Search & Filters */}
         <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-8">
           <div className="relative w-full sm:w-1/2">
             <Search className="absolute left-3 top-3 text-gray-400 w-5 h-5" />
@@ -147,16 +154,26 @@ export default function TaskList() {
               className="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
             />
           </div>
-
           <div className="flex gap-4">
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
               className="border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
             >
-              <option value="all">All Tasks</option>
+              <option value="all">All Status</option>
               <option value="pending">Pending</option>
               <option value="completed">Completed</option>
+            </select>
+
+            <select
+              value={priorityFilter}
+              onChange={(e) => setPriorityFilter(e.target.value)}
+              className="border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            >
+              <option value="all">All Priorities</option>
+              <option value="high">High</option>
+              <option value="medium">Medium</option>
+              <option value="low">Low</option>
             </select>
           </div>
         </div>
@@ -166,7 +183,7 @@ export default function TaskList() {
           {filteredTasks.map((task) => (
             <div
               key={task._id}
-              className="bg-white rounded-lg shadow hover:shadow-lg transition p-5 flex flex-col sm:flex-row sm:justify-between sm:items-center"
+              className={`bg-white rounded-lg shadow hover:shadow-lg transition p-5 flex flex-col sm:flex-row sm:justify-between sm:items-center ${getPriorityBorder(task.priority || "low")}`}
             >
               {editingTaskId === task._id ? (
                 <div className="flex flex-col sm:flex-row sm:items-center gap-2 w-full">
@@ -224,24 +241,16 @@ export default function TaskList() {
               ) : (
                 <div className="flex flex-col sm:flex-row sm:justify-between w-full items-start sm:items-center">
                   <div className="flex flex-col gap-1">
-                    <h4 className="text-lg font-semibold text-gray-800">
-                      {task.title || "Untitled Task"}
-                    </h4>
+                    <h4 className="text-lg font-semibold text-gray-800">{task.title || "Untitled Task"}</h4>
                     <p className="text-sm text-gray-600">{task.description || "No description"}</p>
                     <div className="flex gap-3 mt-2 text-sm">
-                      <span className={`px-2 py-1 rounded-full text-xs ${getPriorityBadge(task.priority || "low")}`}>
+                      <span className={`px-3 py-1 rounded-full text-xs ${getPriorityBadge(task.priority || "low")}`}>
                         {(task.priority || "low").charAt(0).toUpperCase() + (task.priority || "low").slice(1)}
                       </span>
                       <span className="text-gray-500 flex items-center gap-1">
                         📅 {task.duedate ? new Date(task.duedate).toLocaleDateString() : "No due date"}
                       </span>
-                      <span
-                        className={`px-2 py-1 rounded-full text-xs ${
-                          task.status === "completed"
-                            ? "bg-green-100 text-green-700"
-                            : "bg-yellow-100 text-yellow-700"
-                        }`}
-                      >
+                      <span className={`px-2 py-1 rounded-full text-xs ${task.status === "completed" ? "bg-green-100 text-green-700" : "bg-yellow-100 text-yellow-700"}`}>
                         {(task.status || "pending").charAt(0).toUpperCase() + (task.status || "pending").slice(1)}
                       </span>
                     </div>
