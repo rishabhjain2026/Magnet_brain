@@ -16,7 +16,7 @@ export default function Login() {
       const res = await API.post("/user/signin", form);
       localStorage.setItem("token", res.data.token);
       alert("Login successful!");
-      navigate("/add");
+      navigate("/tasklist");
     } catch (err) {
       alert(err.response?.data || "Login failed");
     }

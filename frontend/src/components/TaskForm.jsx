@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import API from "../api";
+import { useNavigate } from "react-router-dom";
 
 export default function TaskForm() {
+  const navigate = useNavigate();
   const [task, setTask] = useState({
     title: "",
     description: "",
@@ -26,6 +28,7 @@ export default function TaskForm() {
         status: "pending",
         priority: "low"
       });
+      navigate("/tasklist");
     } catch (err) {
       alert("Failed to add task");
       console.error(err);
@@ -88,6 +91,7 @@ export default function TaskForm() {
           className="bg-blue-500 text-white font-semibold py-2 rounded-lg hover:bg-blue-600 transition"
         >
           Save Task
+        
         </button>
       </form>
     </div>

@@ -4,6 +4,8 @@ dotenv.config()
 exports.createtoken=async(payload)=>{
     try {
         const token=await jwt.sign(payload,process.env.secret,{expiresIn:'2h'})
+        console.log("Generated Token:", token);
+
         return token
     }
     catch (error) {

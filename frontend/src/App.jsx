@@ -13,7 +13,7 @@ export default function App() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
-        <Route path="/TaskList" element={<ProtectedRoute><TaskList /></ProtectedRoute>} />
+        <Route path="/tasklist" element={<ProtectedRoute><TaskList /></ProtectedRoute>} />
         <Route path="/add" element={<ProtectedRoute><TaskForm /></ProtectedRoute>} />
       </Routes>
     </Router>
