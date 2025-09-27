@@ -36,7 +36,20 @@ export default function TaskForm() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-200 via-purple-200 to-pink-200 px-4">
+    <div className="min-h-screen flex flex-col items-center bg-gradient-to-br from-blue-200 via-purple-200 to-pink-200 px-4 py-6 relative">
+      
+      {/* Top-right Home button */}
+      <div className="w-full flex justify-end mb-4">
+        <button
+          type="button"
+          onClick={() => navigate("/")}
+          className="bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-semibold py-2 px-4 rounded-lg hover:scale-105 transform transition shadow-lg"
+        >
+          Return to Home Page
+        </button>
+      </div>
+
+      {/* Task Form */}
       <div className="w-full max-w-md p-8 bg-white rounded-2xl shadow-2xl ring-1 ring-gray-300">
         <h2 className="text-3xl font-bold mb-6 text-gray-800 text-center">
           Add New Task
@@ -92,6 +105,7 @@ export default function TaskForm() {
             </select>
           </div>
 
+          {/* Save Task Button */}
           <button
             type="submit"
             className="bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-semibold py-3 rounded-lg hover:scale-105 transform transition shadow-lg"

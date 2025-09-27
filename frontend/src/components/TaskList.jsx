@@ -124,6 +124,13 @@ export default function TaskList() {
           >
             <Plus size={18} /> Add Task
           </button>
+
+          <button
+            onClick={() => navigate("/")}
+            className="flex items-center gap-2 bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700 transition shadow-md"
+          >
+             Home
+          </button>
         </div>
 
         {/* Stats */}
