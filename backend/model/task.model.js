@@ -17,7 +17,8 @@ const TaskSchema=new mongoose.Schema({
     },
     priority:{
         type:String,
-    }
+    },
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     // id:{
     //     type:String
     // }

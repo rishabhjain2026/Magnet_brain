@@ -15,7 +15,7 @@ export default function Signup() {
     try {
       await API.post("/user/signup", form);
       alert("Signup successful!");
-      navigate("/add");
+      navigate("/login");
     } catch (err) {
       alert(err.response?.data || "Signup failed");
     }
