@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import API from "../api";
 import { Plus, Edit, Trash2, Search } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 export default function TaskList() {
   const [tasks, setTasks] = useState([]);
@@ -13,6 +14,8 @@ export default function TaskList() {
     status: "pending",
     priority: "low",
   });
+
+  const navigate = useNavigate();
   const [search, setSearch] = useState("");
 
   // Fetch tasks from backend
@@ -28,6 +31,11 @@ export default function TaskList() {
   useEffect(() => {
     fetchTasks();
   }, []);
+
+   // Navigate to Add Task page
+  const goToAddTask = () => {
+    navigate("/add");
+  };
 
   // Dashboard stats
   const totalTasks = tasks.length;
@@ -96,9 +104,20 @@ export default function TaskList() {
   return (
     <div className="min-h-screen bg-gray-50 py-10 px-4">
       <div className="max-w-6xl mx-auto">
-        <h2 className="text-4xl font-bold text-gray-800 mb-10 text-center">
-          Task Manager
-        </h2>
+        <div className="flex justify-between items-center mb-10">
+  <h2 className="text-4xl font-bold text-gray-800">
+    Task Manager
+  </h2>
+
+  <button
+    onClick={goToAddTask} // Navigate to TaskForm
+    className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
+  >
+    <Plus size={18} />
+    Add Task
+  </button>
+</div>
+
 
         {/* Stats */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-10">
