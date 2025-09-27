@@ -23,10 +23,19 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500">
+      {/* Top-right button */}
+      <button
+        onClick={() => navigate("/")}
+        className="absolute top-6 right-6 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold px-4 py-2 rounded-lg shadow-lg hover:scale-105 transform transition"
+      >
+        Return to Home
+      </button>
+
+      {/* Login Form */}
       <form
         onSubmit={submit}
-        className="bg-white p-8 rounded-xl shadow-lg w-full max-w-md flex flex-col gap-4"
+        className="bg-white/90 backdrop-blur-md p-8 rounded-xl shadow-2xl w-full max-w-md flex flex-col gap-4"
       >
         <h2 className="text-3xl font-bold text-gray-700 text-center mb-4">
           Login
@@ -39,7 +48,7 @@ export default function Login() {
           value={form.email}
           onChange={handleChange}
           required
-          className="border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+          className="border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-indigo-400"
         />
 
         <input
@@ -49,19 +58,19 @@ export default function Login() {
           value={form.password}
           onChange={handleChange}
           required
-          className="border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+          className="border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-indigo-400"
         />
 
         <button
           type="submit"
-          className="bg-blue-500 text-white font-semibold py-2 rounded-lg hover:bg-blue-600 transition"
+          className="bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-semibold py-2 rounded-lg hover:scale-105 transform transition"
         >
           Log In
         </button>
 
         <p className="text-center text-gray-600 mt-2">
           Don't have an account?{" "}
-          <Link to="/signup" className="text-blue-500 hover:underline">
+          <Link to="/signup" className="text-indigo-500 hover:underline">
             Sign up here
           </Link>
         </p>

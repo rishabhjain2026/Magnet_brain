@@ -7,11 +7,11 @@ const userSchema=new mongoose.Schema({
     email:{
         type:String,
         unique:true,
-        require:true
+        required:true
     },
     password:{
         type:String
     }
 })
 
-module.exports=mongoose.model('users',userSchema);
+module.exports=mongoose.model('users_brain',userSchema);

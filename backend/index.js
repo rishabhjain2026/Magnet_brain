@@ -20,7 +20,7 @@ app.use("/user",userroutes)
 
 app.use("/task",taskroutes)
 
-mongoose.connect("mongodb://localhost:27017/magnet_brain").then(()=>{
+mongoose.connect(process.env.mongo_atlas).then(()=>{
     console.log("connected to database")
 }).catch(()=>{
     console.log("failed to connect")
